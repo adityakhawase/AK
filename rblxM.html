@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="description" content="Roblox Gaming by Aditya Khawase - Gameplay, content creation, and favorite games">
+    <meta name="keywords" content="Roblox, Gaming, Content Creator, Hypershot, Blox Fruits, Grow A Garden">
+    <meta name="author" content="Aditya Khawase">
+    <meta name="theme-color" content="#00ff88">
+    <title>Roblox Gaming | Aditya Khawase</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,700;1,800&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .roblox-hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+                        url('https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=1920') no-repeat center/cover;
+            min-height: 60vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 5rem 2rem 3rem;
+            color: white;
+        }
+
+        .roblox-hero h1 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 3.5rem;
+            font-style: normal;
+            margin-bottom: 1rem;
+        }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin: 3rem auto;
+            max-width: 1400px;
+            padding: 0 2rem;
+        }
+
+        .game-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 0, 255, 0.2);
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .game-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--secondary-color), var(--primary-color));
+        }
+
+        .game-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--secondary-color);
+            box-shadow: 0 15px 40px rgba(255, 0, 255, 0.3);
+        }
+
+        .game-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .game-icon {
+            font-size: 2.5rem;
+            flex-shrink: 0;
+        }
+
+        .game-title {
+            flex: 1;
+        }
+
+        .game-title h3 {
+            margin: 0;
+            font-size: 1.5rem;
+            color: var(--secondary-color);
+        }
+
+        .game-badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        .badge-favorite {
+            background: rgba(255, 0, 255, 0.2);
+            color: var(--secondary-color);
+            border: 1px solid var(--secondary-color);
+        }
+
+        .badge-trending {
+            background: rgba(0, 255, 136, 0.2);
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+        }
+
+        .badge-classic {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-light);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .game-description {
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        .game-details {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .detail-icon {
+            color: var(--secondary-color);
+        }
+
+        .game-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--secondary-color);
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .content-section {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 3rem 2rem;
+            border-radius: 15px;
+            margin: 3rem auto;
+            max-width: 1200px;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .content-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 0, 255, 0.2);
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .content-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--secondary-color);
+            box-shadow: 0 10px 30px rgba(255, 0, 255, 0.3);
+        }
+
+        .content-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .back-btn {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--secondary-color);
+            text-decoration: none;
+            border-radius: 50px;
+            border: 2px solid var(--secondary-color);
+            transition: all 0.3s;
+            margin-top: 2rem;
+        }
+
+        .back-btn:hover {
+            background: var(--secondary-color);
+            color: var(--dark-bg);
+        }
+
+        .section-title {
+            text-align: center;
+            margin: 3rem 0 2rem;
+            font-size: 2.5rem;
+            color: var(--secondary-color);
+        }
+
+        @media (max-width: 768px) {
+            .roblox-hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .games-grid {
+                grid-template-columns: 1fr;
+                padding: 0 1rem;
+            }
+
+            .game-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="index.html#about">About</a></li>
+            <li><a href="index.html#skills">Skills</a></li>
+            <li><a href="index.html#projects">Projects</a></li>
+            <li><a href="index.html#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <div class="roblox-hero">
+        <h1>🎮 Roblox Gaming</h1>
+        <p>Exploring trending games, creating content, and having fun in the Roblox universe</p>
+    </div>
+
+    <section>
+        <h2 class="section-title">Favorite Games</h2>
+        <div class="games-grid">
+            <div class="game-card">
+                <div class="game-header">
+                    <div class="game-icon">🎯</div>
+                    <div class="game-title">
+                        <h3>Hypershot</h3>
+                        <span class="game-badge badge-favorite">Favorite</span>
+                    </div>
+                </div>
+                <p class="game-description">
+                    Fast-paced FPS action with intense gameplay. One of my go-to games for competitive content and exciting moments.
+                </p>
+                <div class="game-details">
+                    <div class="detail-item">
+                        <span class="detail-icon">🎮</span>
+                        <span>Genre: First-Person Shooter</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">⚡</span>
+                        <span>Fast-Paced Action</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">🏆</span>
+                        <span>Competitive Gameplay</span>
+                    </div>
+                </div>
+                <div class="game-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">100+</div>
+                        <div class="stat-label">Hours Played</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">⭐⭐⭐⭐⭐</div>
+                        <div class="stat-label">Rating</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="game-card">
+                <div class="game-header">
+                    <div class="game-icon">🌱</div>
+                    <div class="game-title">
+                        <h3>Grow A Garden</h3>
+                        <span class="game-badge badge-trending">Trending</span>
+                    </div>
+                </div>
+                <p class="game-description">
+                    Relaxing farming and gardening simulator. Perfect for chill streams and creative content. Build your dream garden!
+                </p>
+                <div class="game-details">
+                    <div class="detail-item">
+                        <span class="detail-icon">🌿</span>
+                        <span>Genre: Simulation</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">🏡</span>
+                        <span>Farming & Building</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">😌</span>
+                        <span>Relaxing Gameplay</span>
+                    </div>
+                </div>
+                <div class="game-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">50+</div>
+                        <div class="stat-label">Hours Played</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">⭐⭐⭐⭐</div>
+                        <div class="stat-label">Rating</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="game-card">
+                <div class="game-header">
+                    <div class="game-icon">🍇</div>
+                    <div class="game-title">
+                        <h3>Blox Fruits</h3>
+                        <span class="game-badge badge-favorite">Favorite</span>
+                    </div>
+                </div>
+                <p class="game-description">
+                    Epic adventure RPG with devil fruits, combat, and exploration. Great for long-form content and progression videos.
+                </p>
+                <div class="game-details">
+                    <div class="detail-item">
+                        <span class="detail-icon">⚔️</span>
+                        <span>Genre: Action RPG</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">🗺️</span>
+                        <span>Open World Exploration</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">💪</span>
+                        <span>Character Progression</span>
+                    </div>
+                </div>
+                <div class="game-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">200+</div>
+                        <div class="stat-label">Hours Played</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">⭐⭐⭐⭐⭐</div>
+                        <div class="stat-label">Rating</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="game-card">
+                <div class="game-header">
+                    <div class="game-icon">🏃</div>
+                    <div class="game-title">
+                        <h3>Obby Games</h3>
+                        <span class="game-badge badge-classic">Classic</span>
+                    </div>
+                </div>
+                <p class="game-description">
+                    Classic Roblox obstacle courses. Perfect for challenge videos and showcasing parkour skills. Always entertaining!
+                </p>
+                <div class="game-details">
+                    <div class="detail-item">
+                        <span class="detail-icon">🎪</span>
+                        <span>Genre: Parkour/Obstacle</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">🎯</span>
+                        <span>Skill-Based Challenges</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">🎬</span>
+                        <span>Great for Content</span>
+                    </div>
+                </div>
+                <div class="game-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">75+</div>
+                        <div class="stat-label">Hours Played</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">⭐⭐⭐⭐</div>
+                        <div class="stat-label">Rating</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="game-card">
+                <div class="game-header">
+                    <div class="game-icon">🎭</div>
+                    <div class="game-title">
+                        <h3>Roleplay Games</h3>
+                        <span class="game-badge badge-trending">Trending</span>
+                    </div>
+                </div>
+                <p class="game-description">
+                    Immersive roleplay experiences with friends. Create stories, build communities, and have fun with creative scenarios.
+                </p>
+                <div class="game-details">
+                    <div class="detail-item">
+                        <span class="detail-icon">🎭</span>
+                        <span>Genre: Roleplay</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">👥</span>
+                        <span>Social & Community</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">🎨</span>
+                        <span>Creative Freedom</span>
+                    </div>
+                </div>
+                <div class="game-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">60+</div>
+                        <div class="stat-label">Hours Played</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">⭐⭐⭐⭐</div>
+                        <div class="stat-label">Rating</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="game-card">
+                <div class="game-header">
+                    <div class="game-icon">🏪</div>
+                    <div class="game-title">
+                        <h3>Tycoon Games</h3>
+                        <span class="game-badge badge-classic">Classic</span>
+                    </div>
+                </div>
+                <p class="game-description">
+                    Build and manage your own business empire. Strategic gameplay with satisfying progression and automation.
+                </p>
+                <div class="game-details">
+                    <div class="detail-item">
+                        <span class="detail-icon">💼</span>
+                        <span>Genre: Business Sim</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">📈</span>
+                        <span>Strategy & Management</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">🏗️</span>
+                        <span>Building & Automation</span>
+                    </div>
+                </div>
+                <div class="game-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">40+</div>
+                        <div class="stat-label">Hours Played</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">⭐⭐⭐⭐</div>
+                        <div class="stat-label">Rating</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="content-section">
+        <h2 style="text-align: center; color: var(--secondary-color);">What I Do on Roblox</h2>
+        <div class="content-grid">
+            <div class="content-card">
+                <div class="content-icon">🎥</div>
+                <h3>Content Creation</h3>
+                <p>Creating engaging gameplay videos, tutorials, and entertaining content for YouTube</p>
+            </div>
+            <div class="content-card">
+                <div class="content-icon">📺</div>
+                <h3>Live Streaming</h3>
+                <p>Daily streams featuring various Roblox games and community interaction</p>
+            </div>
+            <div class="content-card">
+                <div class="content-icon">🛍️</div>
+                <h3>In-Game Trading</h3>
+                <p>Trading items, exploring the Roblox economy, and collecting rare merchandise</p>
+            </div>
+            <div class="content-card">
+                <div class="content-icon">👥</div>
+                <h3>Community</h3>
+                <p>Building a community of gamers and connecting with fellow Roblox enthusiasts</p>
+            </div>
+        </div>
+    </section>
+
+    <section style="text-align: center; padding: 3rem 2rem;">
+        <h2>Join the Adventure!</h2>
+        <p>Follow me on YouTube and Instagram for Roblox gameplay, tips, and daily content!</p>
+        <a href="https://youtube.com/@knockbackkk" class="btn" target="_blank" rel="noopener noreferrer">Subscribe on YouTube</a>
+        <br>
+        <a href="index.html" class="back-btn">← Back to Home</a>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 Aditya Khawase. All rights reserved.</p>
+        <p>Chh. Sambhajinagar, Maharashtra, India</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="description" content="Minecraft SMP Servers by Aditya Khawase - Custom survival multiplayer experiences">
+    <meta name="keywords" content="Minecraft, SMP, Server, Survival, Multiplayer, Gaming">
+    <meta name="author" content="Aditya Khawase">
+    <meta name="theme-color" content="#00ff88">
+    <title>Minecraft SMP Servers | Aditya Khawase</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,700;1,800&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .server-hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+                        url('https://images.unsplash.com/photo-1580327344181-c1163234e5a0?w=1920') no-repeat center/cover;
+            min-height: 60vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 5rem 2rem 3rem;
+            color: white;
+        }
+
+        .server-hero h1 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 3.5rem;
+            font-style: normal;
+            margin-bottom: 1rem;
+        }
+
+        .servers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin: 3rem auto;
+            max-width: 1400px;
+            padding: 0 2rem;
+        }
+
+        .server-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .server-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        }
+
+        .server-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary-color);
+            box-shadow: 0 15px 40px rgba(0, 255, 136, 0.3);
+        }
+
+        .server-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .server-icon {
+            font-size: 2.5rem;
+            flex-shrink: 0;
+        }
+
+        .server-title {
+            flex: 1;
+        }
+
+        .server-title h3 {
+            margin: 0;
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        .server-status {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        .status-active {
+            background: rgba(0, 255, 136, 0.2);
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+        }
+
+        .status-archived {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-light);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .server-description {
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        .server-details {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .detail-icon {
+            color: var(--primary-color);
+        }
+
+        .server-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .back-btn {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--primary-color);
+            text-decoration: none;
+            border-radius: 50px;
+            border: 2px solid var(--primary-color);
+            transition: all 0.3s;
+            margin-top: 2rem;
+        }
+
+        .back-btn:hover {
+            background: var(--primary-color);
+            color: var(--dark-bg);
+        }
+
+        .section-title {
+            text-align: center;
+            margin: 3rem 0 2rem;
+            font-size: 2.5rem;
+            color: var(--primary-color);
+        }
+
+        @media (max-width: 768px) {
+            .server-hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .servers-grid {
+                grid-template-columns: 1fr;
+                padding: 0 1rem;
+            }
+
+            .server-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="index.html#about">About</a></li>
+            <li><a href="index.html#skills">Skills</a></li>
+            <li><a href="index.html#projects">Projects</a></li>
+            <li><a href="index.html#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <div class="server-hero">
+        <h1>🎮 My Minecraft SMP Servers</h1>
+        <p>A collection of custom survival multiplayer servers I've developed and managed</p>
+    </div>
+
+    <section>
+        <h2 class="section-title">Active Servers</h2>
+        <div class="servers-grid">
+            <div class="server-card">
+                <div class="server-header">
+                    <div class="server-icon">⚔️</div>
+                    <div class="server-title">
+                        <h3>KnockSMP</h3>
+                        <span class="server-status status-active">Active</span>
+                    </div>
+                </div>
+                <p class="server-description">
+                    My flagship survival server featuring custom plugins, economy system, and an active community. Built on Paper MC for optimal performance.
+                </p>
+                <div class="server-details">
+                    <div class="detail-item">
+                        <span class="detail-icon">🔧</span>
+                        <span>Platform: Paper MC</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">📦</span>
+                        <span>Custom Plugins & Features</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">🎯</span>
+                        <span>Survival + Economy</span>
+                    </div>
+                </div>
+                <div class="server-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">1.20+</div>
+                        <div class="stat-label">Version</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">24/7</div>
+                        <div class="stat-label">Uptime</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="server-card">
+                <div class="server-header">
+                    <div class="server-icon">🌲</div>
+                    <div class="server-title">
+                        <h3>Outdoor SMP S4</h3>
+                        <span class="server-status status-active">Active</span>
+                    </div>
+                </div>
+                <p class="server-description">
+                    The latest season of Outdoor SMP with enhanced features, new biomes, and improved gameplay mechanics. Community-driven events and challenges.
+                </p>
+                <div class="server-details">
+                    <div class="detail-item">
+                        <span class="detail-icon">🔧</span>
+                        <span>Platform: Spigot MC</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">🏆</span>
+                        <span>Season 4 - Latest</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">👥</span>
+                        <span>Community Events</span>
+                    </div>
+                </div>
+                <div class="server-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">1.20</div>
+                        <div class="stat-label">Version</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">New</div>
+                        <div class="stat-label">Season</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="section-title">Previous Seasons & Servers</h2>
+        <div class="servers-grid">
+            <div class="server-card">
+                <div class="server-header">
+                    <div class="server-icon">🗡️</div>
+                    <div class="server-title">
+                        <h3>Slaughter SMP</h3>
+                        <span class="server-status status-archived">Archived</span>
+                    </div>
+                </div>
+                <p class="server-description">
+                    PvP-focused survival server with custom combat mechanics and arena battles. Featured unique plugin configurations for competitive gameplay.
+                </p>
+                <div class="server-details">
+                    <div class="detail-item">
+                        <span class="detail-icon">⚔️</span>
+                        <span>PvP Focused</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">🏟️</span>
+                        <span>Arena Battles</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="server-card">
+                <div class="server-header">
+                    <div class="server-icon">🌊</div>
+                    <div class="server-title">
+                        <h3>Kreek SMP</h3>
+                        <span class="server-status status-archived">Archived</span>
+                    </div>
+                </div>
+                <p class="server-description">
+                    Creative survival experience with custom world generation and unique building challenges. Focused on community collaboration.
+                </p>
+                <div class="server-details">
+                    <div class="detail-item">
+                        <span class="detail-icon">🏗️</span>
+                        <span>Building Focused</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">🌍</span>
+                        <span>Custom World Gen</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="server-card">
+                <div class="server-header">
+                    <div class="server-icon">🌿</div>
+                    <div class="server-title">
+                        <h3>Outdoor SMP S1</h3>
+                        <span class="server-status status-archived">Archived</span>
+                    </div>
+                </div>
+                <p class="server-description">
+                    The original Outdoor SMP that started it all. Pure vanilla survival with minimal plugins, focusing on the classic Minecraft experience.
+                </p>
+                <div class="server-details">
+                    <div class="detail-item">
+                        <span class="detail-icon">🎮</span>
+                        <span>Season 1 - Original</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">📜</span>
+                        <span>Vanilla+ Experience</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="server-card">
+                <div class="server-header">
+                    <div class="server-icon">🌳</div>
+                    <div class="server-title">
+                        <h3>Outdoor SMP S2</h3>
+                        <span class="server-status status-archived">Archived</span>
+                    </div>
+                </div>
+                <p class="server-description">
+                    Second season with improved features, added economy system, and enhanced player protection. Built on community feedback.
+                </p>
+                <div class="server-details">
+                    <div class="detail-item">
+                        <span class="detail-icon">💰</span>
+                        <span>Economy Added</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">🛡️</span>
+                        <span>Protection System</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="server-card">
+                <div class="server-header">
+                    <div class="server-icon">🌲</div>
+                    <div class="server-title">
+                        <h3>Outdoor SMP S3</h3>
+                        <span class="server-status status-archived">Archived</span>
+                    </div>
+                </div>
+                <p class="server-description">
+                    Third season featuring custom quests, achievements system, and community events. Introduced new gameplay mechanics and challenges.
+                </p>
+                <div class="server-details">
+                    <div class="detail-item">
+                        <span class="detail-icon">🎯</span>
+                        <span>Quests & Achievements</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">🎪</span>
+                        <span>Community Events</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="server-card">
+                <div class="server-header">
+                    <div class="server-icon">🔨</div>
+                    <div class="server-title">
+                        <h3>Outdoor SMP S1 (Rebuild)</h3>
+                        <span class="server-status status-archived">Archived</span>
+                    </div>
+                </div>
+                <p class="server-description">
+                    A complete rebuild of Season 1 with modern plugins and optimizations. Preserved the original spirit while adding quality-of-life improvements.
+                </p>
+                <div class="server-details">
+                    <div class="detail-item">
+                        <span class="detail-icon">🔄</span>
+                        <span>Rebuilt & Optimized</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">⚡</span>
+                        <span>Modern Features</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section style="text-align: center; padding: 3rem 2rem;">
+        <h2>Want to Join?</h2>
+        <p>Follow me on YouTube and Instagram for server updates, gameplay videos, and announcements!</p>
+        <a href="https://youtube.com/@knockbackkk" class="btn" target="_blank" rel="noopener noreferrer">Subscribe on YouTube</a>
+        <br>
+        <a href="index.html" class="back-btn">← Back to Home</a>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 Aditya Khawase. All rights reserved.</p>
+        <p>Chh. Sambhajinagar, Maharashtra, India</p>
+    </footer>
+</body>
+</html>

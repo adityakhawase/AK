@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="description" content="Programming Journey by Aditya Khawase - Learning path, skills, and future goals">
+    <meta name="keywords" content="Programming, C, Python, HTML, JavaScript, Machine Learning, Web Development">
+    <meta name="author" content="Aditya Khawase">
+    <meta name="theme-color" content="#00ff88">
+    <title>Programming Journey | Aditya Khawase</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,700;1,800&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .programming-hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+                        url('https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=1920') no-repeat center/cover;
+            min-height: 60vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 5rem 2rem 3rem;
+            color: white;
+        }
+
+        .programming-hero h1 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 3.5rem;
+            font-style: normal;
+            margin-bottom: 1rem;
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 3rem auto;
+            max-width: 1400px;
+            padding: 0 2rem;
+        }
+
+        .skill-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .skill-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+        }
+
+        .skill-card.learned::before {
+            background: linear-gradient(90deg, #4CAF50, #8BC34A);
+        }
+
+        .skill-card.learning::before {
+            background: linear-gradient(90deg, #2196F3, #03A9F4);
+        }
+
+        .skill-card.planned::before {
+            background: linear-gradient(90deg, #FF9800, #FFC107);
+        }
+
+        .skill-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 255, 136, 0.3);
+        }
+
+        .skill-card.learned:hover {
+            border-color: #4CAF50;
+            box-shadow: 0 15px 40px rgba(76, 175, 80, 0.3);
+        }
+
+        .skill-card.learning:hover {
+            border-color: #2196F3;
+            box-shadow: 0 15px 40px rgba(33, 150, 243, 0.3);
+        }
+
+        .skill-card.planned:hover {
+            border-color: #FF9800;
+            box-shadow: 0 15px 40px rgba(255, 152, 0, 0.3);
+        }
+
+        .skill-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .skill-icon {
+            font-size: 2.5rem;
+            flex-shrink: 0;
+        }
+
+        .skill-title {
+            flex: 1;
+        }
+
+        .skill-title h3 {
+            margin: 0;
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        .skill-badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        .badge-learned {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4CAF50;
+            border: 1px solid #4CAF50;
+        }
+
+        .badge-learning {
+            background: rgba(33, 150, 243, 0.2);
+            color: #2196F3;
+            border: 1px solid #2196F3;
+        }
+
+        .badge-planned {
+            background: rgba(255, 152, 0, 0.2);
+            color: #FF9800;
+            border: 1px solid #FF9800;
+        }
+
+        .skill-description {
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 1rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 1s ease;
+        }
+
+        .progress-learned {
+            background: linear-gradient(90deg, #4CAF50, #8BC34A);
+        }
+
+        .progress-learning {
+            background: linear-gradient(90deg, #2196F3, #03A9F4);
+        }
+
+        .progress-planned {
+            background: linear-gradient(90deg, #FF9800, #FFC107);
+        }
+
+        .skill-details {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .detail-icon {
+            color: var(--primary-color);
+        }
+
+        .journey-timeline {
+            max-width: 1000px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+        }
+
+        .timeline-item {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .timeline-marker {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+            z-index: 1;
+        }
+
+        .timeline-content {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border-left: 3px solid var(--primary-color);
+        }
+
+        .back-btn {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--primary-color);
+            text-decoration: none;
+            border-radius: 50px;
+            border: 2px solid var(--primary-color);
+            transition: all 0.3s;
+            margin-top: 2rem;
+        }
+
+        .back-btn:hover {
+            background: var(--primary-color);
+            color: var(--dark-bg);
+        }
+
+        .section-title {
+            text-align: center;
+            margin: 3rem 0 2rem;
+            font-size: 2.5rem;
+            color: var(--primary-color);
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            max-width: 1000px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+        }
+
+        .stat-box {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            border: 1px solid rgba(0, 255, 136, 0.2);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .stat-label {
+            color: var(--text-light);
+            margin-top: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .programming-hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .skills-grid {
+                grid-template-columns: 1fr;
+                padding: 0 1rem;
+            }
+
+            .timeline-item {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="index.html#about">About</a></li>
+            <li><a href="index.html#skills">Skills</a></li>
+            <li><a href="index.html#projects">Projects</a></li>
+            <li><a href="index.html#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <div class="programming-hero">
+        <h1>💻 Programming Journey</h1>
+        <p>My path through the world of code - from basics to advanced technologies</p>
+    </div>
+
+    <section>
+        <div class="stats-container">
+            <div class="stat-box">
+                <div class="stat-number">3</div>
+                <div class="stat-label">Languages Learned</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">2</div>
+                <div class="stat-label">Currently Learning</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">10+</div>
+                <div class="stat-label">Future Goals</div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2 class="section-title">✅ Learned</h2>
+        <div class="skills-grid">
+            <div class="skill-card learned">
+                <div class="skill-header">
+                    <div class="skill-icon">🔤</div>
+                    <div class="skill-title">
+                        <h3>C Programming</h3>
+                        <span class="skill-badge badge-learned">Completed</span>
+                    </div>
+                </div>
+                <p class="skill-description">
+                    Foundation of programming. Learned memory management, pointers, data structures, and core programming concepts.
+                </p>
+                <div class="skill-details">
+                    <div class="detail-item">
+                        <span class="detail-icon">📚</span>
+                        <span>Fundamentals & Syntax</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">🧠</span>
+                        <span>Memory Management</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">🔧</span>
+                        <span>Data Structures</span>
+                    </div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill progress-learned" style="width: 85%;"></div>
+                </div>
+            </div>
+
+            <div class="skill-card learned">
+                <div class="skill-header">
+                    <div class="skill-icon">🌐</div>
+                    <div class="skill-title">
+                        <h3>HTML</h3>
+                        <span class="skill-badge badge-learned">Completed</span>
+                    </div>
+                </div>
+                <p class="skill-description">
+                    Web structure and markup. Built multiple websites including this portfolio. Understanding semantic HTML and accessibility.
+                </p>
+                <div class="skill-details">
+                    <div class="detail-item">
+                        <span class="detail-icon">📄</span>
+                        <span>Semantic HTML5</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">🎨</span>
+                        <span>Forms & Media</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">♿</span>
+                        <span>Accessibility Basics</span>
+                    </div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill progress-learned" style="width: 80%;"></div>
+                </div>
+            </div>
+
+            <div class="skill-card learned">
+                <div class="skill-header">
+                    <div class="skill-icon">🎨</div>
+                    <div class="skill-title">
+                        <h3>CSS (Basics)</h3>
+                        <span class="skill-badge badge-learned">Completed</span>
+                    </div>
+                </div>
+                <p class="skill-description">
+                    Styling and layout fundamentals. Created responsive designs using Flexbox and Grid. Understanding animations and transitions.
+                </p>
+                <div class="skill-details">
+                    <div class="detail-item">
+                        <span class="detail-icon">📱</span>
+                        <span>Responsive Design</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">🎭</span>
+                        <span>Flexbox & Grid</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">✨</span>
+                        <span>Animations</span>
+                    </div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill progress-learned" style="width: 70%;"></div>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="section-title">📖 Currently Learning</h2>
+        <div class="skills-grid">
+            <div class="skill-card learning">
+                <div class="skill-header">
+                    <div class="skill-icon">🐍</div>
+                    <div class="skill-title">
+                        <h3>Python</h3>
+                        <span class="skill-badge badge-learning">In Progress</span>
+                    </div>
+                </div>
+                <p class="skill-description">
+                    Versatile programming language. Learning for AI/ML applications, automation, and general-purpose programming.
+                </p>
+                <div class="skill-details">
+                    <div class="detail-item">
+                        <span class="detail-icon">🤖</span>
+                        <span>AI/ML Applications</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">📊</span>
+                        <span>Data Analysis</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">⚙️</span>
+                        <span>Automation Scripts</span>
+                    </div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill progress-learning" style="width: 45%;"></div>
+                </div>
+            </div>
+
+            <div class="skill-card learning">
+                <div class="skill-header">
+                    <div class="skill-icon">🍃</div>
+                    <div class="skill-title">
+                        <h3>MongoDB</h3>
+                        <span class="skill-badge badge-learning">In Progress</span>
+                    </div>
+                </div>
+                <p class="skill-description">
+                    NoSQL database for modern applications. Learning document-based storage, queries, and database design patterns.
+                </p>
+                <div class="skill-details">
+                    <div class="detail-item">
+                        <span class="detail-icon">💾</span>
+                        <span>NoSQL Database</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">🔍</span>
+                        <span>Queries & Aggregation</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">🏗️</span>
+                        <span>Schema Design</span>
+                    </div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill progress-learning" style="width: 35%;"></div>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="section-title">🎯 Future Goals</h2>
+        <div class="skills-grid">
+            <div class="skill-card planned">
+                <div class="skill-header">
+                    <div class="skill-icon">☕</div>
+                    <div class="skill-title">
+                        <h3>Java</h3>
+                        <span class="skill-badge badge-planned">Planned</span>
+                    </div>
+                </div>
+                <p class="skill-description">
+                    Enterprise-level programming. Want to learn for Android development, backend systems, and Minecraft plugin development.
+                </p>
+                <div class="progress-bar">
+                    <div class="progress-fill progress-planned" style="width: 10%;"></div>
+                </div>
+            </div>
+
+            <div class="skill-card planned">
+                <div class="skill-header">
+                    <div class="skill-icon">📜</div>
+                    <div class="skill-title">
+                        <h3>JavaScript</h3>
+                        <span class="skill-badge badge-planned">Planned</span>
+                    </div>
+                </div>
+                <p class="skill-description">
+                    Essential for web development. Planning to learn for interactive websites, web apps, and full-stack development.
+                </p>
+                <div class="progress-bar">
+                    <div class="progress-fill progress-planned" style="width: 15%;"></div>
+                </div>
+            </div>
+
+            <div class="skill-card planned">
+                <div class="skill-header">
+                    <div class="skill-icon">🧠</div>
+                    <div class="skill-title">
+                        <h3>Machine Learning</h3>
+                        <span class="skill-badge badge-planned">Planned</span>
+                    </div>
+                </div>
+                <p class="skill-description">
+                    AI and ML algorithms. Aligns with my diploma in AI & ML. Want to build intelligent systems and models.
+                </p>
+                <div class="progress-bar">
+                    <div class="progress-fill progress-planned" style="width: 5%;"></div>
+                </div>
+            </div>
+
+            <div class="skill-card planned">
+                <div class="skill-header">
+                    <div class="skill-icon">🦀</div>
+                    <div class="skill-title">
+                        <h3>Rust</h3>
+                        <span class="skill-badge badge-planned">Planned</span>
+                    </div>
+                </div>
+                <p class="skill-description">
+                    Modern systems programming. Interested in performance, memory safety, and building efficient applications.
+                </p>
+                <div class="progress-bar">
+                    <div class="progress-fill progress-planned" style="width: 5%;"></div>
+                </div>
+            </div>
+
+            <div class="skill-card planned">
+                <div class="skill-header">
+                    <div class="skill-icon">💎</div>
+                    <div class="skill-title">
+                        <h3>Ruby</h3>
+                        <span class="skill-badge badge-planned">Planned</span>
+                    </div>
+                </div>
+                <p class="skill-description">
+                    Elegant and productive language. Want to explore Ruby on Rails for rapid web application development.
+                </p>
+                <div class="progress-bar">
+                    <div class="progress-fill progress-planned" style="width: 5%;"></div>
+                </div>
+            </div>
+
+            <div class="skill-card planned">
+                <div class="skill-header">
+                    <div class="skill-icon">🗄️</div>
+                    <div class="skill-title">
+                        <h3>SQLite</h3>
+                        <span class="skill-badge badge-planned">Planned</span>
+                    </div>
+                </div>
+                <p class="skill-description">
+                    Lightweight SQL database. Perfect for small applications, mobile apps, and learning database fundamentals.
+                </p>
+                <div class="progress-bar">
+                    <div class="progress-fill progress-planned" style="width: 10%;"></div>
+                </div>
+            </div>
+
+            <div class="skill-card planned">
+                <div class="skill-header">
+                    <div class="skill-icon">🎨</div>
+                    <div class="skill-title">
+                        <h3>CSS (Advanced)</h3>
+                        <span class="skill-badge badge-planned">Planned</span>
+                    </div>
+                </div>
+                <p class="skill-description">
+                    Deep dive into CSS. Want to master animations, complex layouts, CSS architecture, and modern techniques.
+                </p>
+                <div class="progress-bar">
+                    <div class="progress-fill progress-planned" style="width: 20%;"></div>
+                </div>
+            </div>
+
+            <div class="skill-card planned">
+                <div class="skill-header">
+                    <div class="skill-icon">⚡</div>
+                    <div class="skill-title">
+                        <h3>C++</h3>
+                        <span class="skill-badge badge-planned">Planned</span>
+                    </div>
+                </div>
+                <p class="skill-description">
+                    Object-oriented programming. Building on C knowledge for game development and high-performance applications.
+                </p>
+                <div class="progress-bar">
+                    <div class="progress-fill progress-planned" style="width: 10%;"></div>
+                </div>
+            </div>
+
+            <div class="skill-card planned">
+                <div class="skill-header">
+                    <div class="skill-icon">🤖</div>
+                    <div class="skill-title">
+                        <h3>Prompt Engineering</h3>
+                        <span class="skill-badge badge-planned">Planned</span>
+                    </div>
+                </div>
+                <p class="skill-description">
+                    AI interaction optimization. Want to learn effective communication with AI models and LLMs for better results.
+                </p>
+                <div class="progress-bar">
+                    <div class="progress-fill progress-planned" style="width: 15%;"></div>
+                </div>
+            </div>
+
+            <div class="skill-card planned">
+                <div class="skill-header">
+                    <div class="skill-icon">🔮</div>
+                    <div class="skill-title">
+                        <h3>And More...</h3>
+                        <span class="skill-badge badge-planned">Exploring</span>
+                    </div>
+                </div>
+                <p class="skill-description">
+                    Always learning and exploring new technologies. Open to frameworks, tools, and emerging technologies in the tech world.
+                </p>
+                <div class="progress-bar">
+                    <div class="progress-fill progress-planned" style="width: 5%;"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section style="background: rgba(255, 255, 255, 0.03); padding: 3rem 2rem; margin: 3rem 0;">
+        <h2 class="section-title">💼 Current Projects</h2>
+        <div class="skills-grid" style="max-width: 800px; margin: 2rem auto;">
+            <div class="skill-card learning">
+                <div class="skill-header">
+                    <div class="skill-icon">🛡️</div>
+                    <div class="skill-title">
+                        <h3>SafetyHub</h3>
+                        <span class="skill-badge badge-learning">In Progress</span>
+                    </div>
+                </div>
+                <p class="skill-description">
+                    A comprehensive safety and security platform. Building a web application focused on community safety, emergency alerts, and resource management.
+                </p>
+                <div class="skill-details">
+                    <div class="detail-item">
+                        <span class="detail-icon">🌐</span>
+                        <span>Web Application</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">🔒</span>
+                        <span>Safety & Security Focus</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">💻</span>
+                        <span>HTML, CSS, JavaScript</span>
+                    </div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill progress-learning" style="width: 40%;"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section style="background: rgba(255, 255, 255, 0.03); padding: 3rem 2rem; margin: 3rem 0;">
+        <h2 class="section-title">🚀 My Learning Journey</h2>
+        <div class="journey-timeline">
+            <div class="timeline-item">
+                <div class="timeline-marker">🎓</div>
+                <div class="timeline-content">
+                    <h3>Started with C Programming</h3>
+                    <p>Began my programming journey with C, learning the fundamentals of programming, logic, and problem-solving.</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-marker">🌐</div>
+                <div class="timeline-content">
+                    <h3>Explored Web Development</h3>
+                    <p>Learned HTML and CSS to build websites. Created this portfolio and other web projects.</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-marker">🐍</div>
+                <div class="timeline-content">
+                    <h3>Currently Learning Python & MongoDB</h3>
+                    <p>Expanding skills with Python for AI/ML and MongoDB for modern database management.</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-marker">🎯</div>
+                <div class="timeline-content">
+                    <h3>Future: Full-Stack & AI/ML</h3>
+                    <p>Planning to become proficient in full-stack development and specialize in AI/ML technologies.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section style="text-align: center; padding: 3rem 2rem;">
+        <h2>Follow My Journey</h2>
+        <p>Watch my coding progress, tutorials, and projects on YouTube!</p>
+        <a href="https://youtube.com/@knockbackkk" class="btn" target="_blank" rel="noopener noreferrer">Subscribe on YouTube</a>
+        <br>
+        <a href="index.html" class="back-btn">← Back to Home</a>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 Aditya Khawase. All rights reserved.</p>
+        <p>Chh. Sambhajinagar, Maharashtra, India</p>
+    </footer>
+</body>
+</html>
