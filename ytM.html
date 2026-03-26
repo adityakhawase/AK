@@ -283,17 +283,76 @@
 
         @media (max-width: 768px) {
             .programming-hero h1 {
-                font-size: 2.5rem;
+                font-size: 2rem;
+            }
+
+            .programming-hero p {
+                font-size: 1rem;
             }
 
             .skills-grid {
                 grid-template-columns: 1fr;
                 padding: 0 1rem;
+                gap: 1.5rem;
             }
 
             .timeline-item {
                 flex-direction: column;
                 gap: 1rem;
+            }
+
+            .stats-container {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .skill-card {
+                padding: 1.5rem;
+            }
+
+            .skill-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .skill-icon {
+                font-size: 2rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .programming-hero {
+                padding: 4rem 1rem 2rem;
+            }
+
+            .programming-hero h1 {
+                font-size: 1.8rem;
+            }
+
+            nav ul {
+                gap: 0.3rem;
+            }
+
+            nav li {
+                margin: 0.2rem;
+            }
+
+            nav a {
+                font-size: 0.85rem;
+                padding: 0.3rem 0.5rem;
+            }
+
+            .stat-number {
+                font-size: 2rem;
+            }
+
+            .skill-title h3 {
+                font-size: 1.3rem;
             }
         }
     </style>
