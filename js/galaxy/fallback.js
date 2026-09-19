@@ -22,6 +22,7 @@ export function createStarfieldFallback(canvas, options = {}) {
     let pixelRatio = 1;
     let frame = null;
     let running = false;
+    let manualPaused = false;
 
     function build() {
         pixelRatio = Math.min(window.devicePixelRatio || 1, 1.5);
@@ -55,9 +56,9 @@ export function createStarfieldFallback(canvas, options = {}) {
         ctx.globalCompositeOperation = 'lighter';
 
         const portrait = width < 820;
-        const cx = width * (portrait ? 0.5 : 0.34);
-        const cy = height * (portrait ? 0.22 : 0.30);
-        const scale = Math.min(width, height) * (portrait ? 0.52 : 0.60);
+        const cx = width * 0.5;
+        const cy = height * 0.5;
+        const scale = Math.min(width, height) * (portrait ? 0.62 : 0.78);
         const spin = reducedMotion ? 0 : time * 0.00002;
 
         for (let i = 0; i < stars.length; i++) {
@@ -90,7 +91,7 @@ export function createStarfieldFallback(canvas, options = {}) {
 
     function loop(time) {
         draw(time);
-        if (running && !reducedMotion) frame = requestAnimationFrame(loop);
+        if (running && !reducedMotion && !manualPaused) frame = requestAnimationFrame(loop);
     }
 
     function start() {
@@ -110,6 +111,17 @@ export function createStarfieldFallback(canvas, options = {}) {
 
     return {
         mode: 'fallback',
+        get paused() { return manualPaused; },
+        pause() {
+            manualPaused = true;
+            running = false;
+            if (frame) cancelAnimationFrame(frame);
+            frame = null;
+        },
+        resume() {
+            manualPaused = false;
+            if (!running) start();
+        },
         dispose() {
             running = false;
             if (frame) cancelAnimationFrame(frame);

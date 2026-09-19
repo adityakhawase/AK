@@ -104,54 +104,6 @@ body::after {
     color: #05050a;
 }
 
-/* ---------- Custom cursor (fine pointers only) ---------- */
-.cursor-dot,
-.cursor-ring {
-    position: fixed;
-    top: 0;
-    left: 0;
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 9999;
-    opacity: 0;
-    transition: opacity 0.3s;
-}
-
-.cursor-dot {
-    width: 7px;
-    height: 7px;
-    background: var(--primary-color);
-    box-shadow: 0 0 12px var(--primary-color);
-}
-
-.cursor-ring {
-    width: 34px;
-    height: 34px;
-    border: 1.5px solid rgba(0, 255, 136, 0.55);
-    transition: opacity 0.3s, width 0.25s var(--ease-out),
-                height 0.25s var(--ease-out), border-color 0.25s, background 0.25s;
-}
-
-.cursor-ring.is-hover {
-    width: 56px;
-    height: 56px;
-    border-color: var(--secondary-color);
-    background: rgba(255, 0, 255, 0.1);
-}
-
-@media (hover: hover) and (pointer: fine) {
-    body.cursor-ready,
-    body.cursor-ready a,
-    body.cursor-ready button {
-        cursor: none;
-    }
-
-    body.cursor-ready .cursor-dot,
-    body.cursor-ready .cursor-ring {
-        opacity: 1;
-    }
-}
-
 /* ---------- Preloader ---------- */
 #preloader {
     position: fixed;
@@ -296,6 +248,96 @@ nav a.active::after {
 nav a.active {
     color: var(--primary-color);
     background: rgba(0, 255, 136, 0.1);
+}
+
+/* ---------- Nav "More" dropdown ---------- */
+nav li.has-submenu {
+    position: relative;
+}
+
+.submenu-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: var(--text-light);
+    font-family: inherit;
+    font-weight: 600;
+    font-size: 0.98rem;
+    padding: 0.45rem 0.95rem;
+    border: 0;
+    border-radius: var(--radius-pill);
+    background: transparent;
+    cursor: pointer;
+    transition: color var(--transition-speed), background var(--transition-speed),
+                transform var(--transition-speed);
+}
+
+.submenu-toggle::after {
+    content: '';
+    border-left: 4.5px solid transparent;
+    border-right: 4.5px solid transparent;
+    border-top: 5.5px solid currentColor;
+    transition: transform 0.3s var(--ease-out);
+}
+
+.has-submenu.open .submenu-toggle::after {
+    transform: rotate(180deg);
+}
+
+.submenu-toggle:hover,
+.submenu-toggle:focus-visible,
+.submenu-toggle.active {
+    color: var(--text-white);
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.submenu-toggle.active {
+    color: var(--primary-color);
+    background: rgba(0, 255, 136, 0.1);
+}
+
+.submenu {
+    list-style: none;
+    position: absolute;
+    top: calc(100% + 0.55rem);
+    left: 50%;
+    min-width: 200px;
+    padding: 0.45rem;
+    border-radius: var(--radius-card);
+    border: 1px solid var(--line);
+    background: rgba(10, 10, 18, 0.96);
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    box-shadow: 0 18px 44px rgba(0, 0, 0, 0.6);
+    opacity: 0;
+    visibility: hidden;
+    transform: translate(-50%, 8px);
+    transition: opacity 0.3s var(--ease-out), transform 0.3s var(--ease-out),
+                visibility 0.3s;
+}
+
+.has-submenu:hover > .submenu,
+.has-submenu:focus-within > .submenu,
+.has-submenu.open > .submenu {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, 0);
+}
+
+.submenu a {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    white-space: nowrap;
+    width: 100%;
+}
+
+.submenu a::after {
+    display: none;
+}
+
+.submenu-icon {
+    font-size: 1.05rem;
 }
 
 .nav-toggle {
@@ -1258,6 +1300,44 @@ footer .sig {
         padding: 0.7rem 1rem;
     }
 
+    /* Submenu flows inline in the mobile menu instead of floating */
+    nav li.has-submenu {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .submenu-toggle {
+        width: 100%;
+        justify-content: center;
+        padding: 0.7rem 1rem;
+    }
+
+    .submenu {
+        position: static;
+        transform: none;
+        min-width: 0;
+        margin: 0.15rem 0.5rem 0.4rem;
+        padding: 0;
+        max-height: 0;
+        overflow: hidden;
+        opacity: 0;
+        visibility: hidden;
+        border: 0;
+        background: rgba(255, 255, 255, 0.03);
+        box-shadow: none;
+        transition: max-height 0.35s var(--ease-out), opacity 0.3s,
+                    padding 0.3s, visibility 0.3s;
+    }
+
+    .has-submenu.open > .submenu {
+        max-height: 200px;
+        padding: 0.4rem;
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+        border: 1px solid var(--line);
+    }
+
     .hero-actions .btn,
     .hero-actions .btn-ghost {
         width: 100%;
@@ -1282,11 +1362,6 @@ footer .sig {
 
 /* ---------- Touch devices ---------- */
 @media (hover: none) and (pointer: coarse) {
-    .cursor-dot,
-    .cursor-ring {
-        display: none;
-    }
-
     .skill-item:active,
     .project-item:active {
         transform: scale(0.985);
@@ -1398,9 +1473,42 @@ footer .sig {
     will-change: opacity;
 }
 
+/* Shooting-star overlay: just above the galaxy, below the vignette
+   and all content, so streaks read bright but never block clicks. */
+#meteor-canvas {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    z-index: -2;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 1.4s var(--ease-out);
+}
+
+/* Foreground dust motes: the nearest layer — above the galaxy,
+   meteors and vignette, still behind all content. Big soft specks
+   drifting with mouse parallax for real depth. */
+#mote-canvas {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 1.4s var(--ease-out);
+}
+
 /* Revealed once the first frame has actually rendered */
 html[data-galaxy-state="webgl"] #galaxy-canvas,
-html[data-galaxy-state="fallback"] #galaxy-canvas {
+html[data-galaxy-state="fallback"] #galaxy-canvas,
+html[data-galaxy-state="webgl"] #meteor-canvas,
+html[data-galaxy-state="fallback"] #meteor-canvas,
+html[data-galaxy-state="webgl"] #mote-canvas,
+html[data-galaxy-state="fallback"] #mote-canvas {
     opacity: 1;
 }
 
@@ -1432,10 +1540,27 @@ html[data-galaxy-state="fallback"] .hero-slider {
    so body copy never sits directly on a bright star field. */
 html[data-galaxy-state="webgl"] #hero::before,
 html[data-galaxy-state="fallback"] #hero::before {
-    /* The galaxy is already dark, so the hero only needs a light
-       readability wash directly behind the headline block. */
+    /* Centred + zoomed galaxy puts the bright core directly behind
+       the headline, so the hero needs a real central dim — darkest
+       in the middle where the text sits, fading out to the stars. */
     background:
-        linear-gradient(to bottom, rgba(7, 7, 11, 0.62) 0%, rgba(7, 7, 11, 0.0) 24%, rgba(7, 7, 11, 0.0) 72%, rgba(7, 7, 11, 0.62) 100%);
+        radial-gradient(46% 42% at 50% 50%, rgba(4, 4, 8, 0.85) 0%, rgba(4, 4, 8, 0.55) 55%, rgba(4, 4, 8, 0.0) 78%),
+        linear-gradient(to bottom, rgba(7, 7, 11, 0.72) 0%, rgba(7, 7, 11, 0.0) 26%, rgba(7, 7, 11, 0.0) 70%, rgba(7, 7, 11, 0.78) 100%);
+}
+
+/* Frosted panel intentionally omitted — readability comes from the
+   central scrim above plus hardened text shadows below. */
+
+html[data-galaxy-state="webgl"] #hero h1,
+html[data-galaxy-state="fallback"] #hero h1 {
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.95), 0 8px 32px rgba(0, 0, 0, 0.9), 0 0 2px rgba(0, 0, 0, 0.9);
+}
+
+html[data-galaxy-state="webgl"] .hero-tagline,
+html[data-galaxy-state="fallback"] .hero-tagline,
+html[data-galaxy-state="webgl"] .hero-location,
+html[data-galaxy-state="fallback"] .hero-location {
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.95), 0 0 2px rgba(0, 0, 0, 0.9);
 }
 
 html[data-galaxy-state="webgl"] #about,
@@ -1519,6 +1644,8 @@ html[data-galaxy-state="webgl"] .galaxy-hint {
 
 @media (prefers-reduced-motion: reduce) {
     #galaxy-canvas,
+    #meteor-canvas,
+    #mote-canvas,
     .galaxy-vignette {
         transition: none;
     }
@@ -1533,4 +1660,66 @@ html.galaxy-dragging,
 html.galaxy-dragging body {
     user-select: none;
     -webkit-user-select: none;
+}
+
+/* ---------- Galaxy widget (pause + quality) ---------- */
+#galaxy-widget {
+    position: fixed;
+    left: 1.1rem;
+    bottom: 1.1rem;
+    z-index: 900;
+    display: flex;
+    gap: 0.4rem;
+    padding: 0.35rem;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--line);
+    background: rgba(7, 7, 11, 0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(14px);
+    transition: opacity 0.6s var(--ease-out), visibility 0.6s, transform 0.6s var(--ease-out);
+}
+
+html[data-galaxy-state="webgl"] #galaxy-widget,
+html[data-galaxy-state="fallback"] #galaxy-widget {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+#galaxy-widget button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    height: 36px;
+    padding: 0 0.7rem;
+    border-radius: var(--radius-pill);
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--primary-color);
+    font-family: inherit;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: background 0.3s, border-color 0.3s, color 0.3s;
+}
+
+#galaxy-widget button:hover,
+#galaxy-widget button:focus-visible {
+    background: rgba(0, 255, 136, 0.1);
+    border-color: var(--line);
+    color: var(--text-white);
+}
+
+#galaxy-widget button[aria-pressed="true"] {
+    color: var(--secondary-color);
+}
+
+#galaxy-widget .galaxy-widget-icon {
+    font-size: 0.8rem;
+    line-height: 1;
 }

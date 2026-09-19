@@ -17,15 +17,14 @@ const INTERACTIVE = 'a, button, input, textarea, select, label, [role="button"]'
 export class OrbitCamera {
     constructor(options = {}) {
         const {
-            radius = 15.5,
+            radius = 11.8,
             phi = 0.78,         // polar angle from +Y; ~45 degrees above the disc,
                                 // face-on enough for the spiral arms to read
             theta = 0.6,
-            /* Lens shift rather than a tilted look-at: keeps the camera
-               orbiting the galactic core while the core itself sits in the
-               lower-right of the frame, leaving clean dark sky behind the
-               hero headline. */
-            screenOffset = [0.36, -0.46],
+            /* Lens shift rather than a tilted look-at: [0, 0] keeps the
+               galactic core dead-centre in the frame while the camera
+               still orbits the core itself. */
+            screenOffset = [0, 0],
             fov = (52 * Math.PI) / 180,
             minRadius = 4.5,
             maxRadius = 32,

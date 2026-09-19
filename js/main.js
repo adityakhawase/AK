@@ -49,44 +49,6 @@
     }
 
     /* ---------------------------------------------------------
-       2. Custom cursor (dot + lagging ring)
-    --------------------------------------------------------- */
-    function initCursor() {
-        if (!finePointer || reduceMotion) return;
-
-        const dot  = document.createElement('div');
-        const ring = document.createElement('div');
-        dot.className  = 'cursor-dot';
-        ring.className = 'cursor-ring';
-        document.body.append(dot, ring);
-        document.body.classList.add('cursor-ready');
-
-        let mx = window.innerWidth / 2, my = window.innerHeight / 2;
-        let rx = mx, ry = my;
-
-        window.addEventListener('mousemove', (e) => {
-            mx = e.clientX;
-            my = e.clientY;
-            dot.style.transform = `translate3d(${mx - 3.5}px, ${my - 3.5}px, 0)`;
-        }, { passive: true });
-
-        (function loop() {
-            rx += (mx - rx) * 0.16;
-            ry += (my - ry) * 0.16;
-            ring.style.transform = `translate3d(${rx - 17}px, ${ry - 17}px, 0)`;
-            requestAnimationFrame(loop);
-        })();
-
-        const hoverables = 'a, button, .skill-item, .project-item, .stat, .contact-row';
-        document.addEventListener('mouseover', (e) => {
-            if (e.target.closest(hoverables)) ring.classList.add('is-hover');
-        });
-        document.addEventListener('mouseout', (e) => {
-            if (e.target.closest(hoverables)) ring.classList.remove('is-hover');
-        });
-    }
-
-    /* ---------------------------------------------------------
        3. Scroll progress bar + sticky nav state + back-to-top
     --------------------------------------------------------- */
     function initScrollChrome() {
@@ -149,12 +111,53 @@
                     const navEl = $('nav');
                     if (navEl) navEl.classList.remove('menu-open');
                     if (toggle) toggle.setAttribute('aria-expanded', 'false');
+                    if (window.__closeSubmenus) window.__closeSubmenus();
                 }
                 history.replaceState(null, '', id);
             });
         });
     }
 
+    /* ---------------------------------------------------------
+        4b. "More" submenu — click toggle (touch/keyboard), hover
+        works via CSS on desktop. One open at a time; Escape or an
+        outside click closes it.
+    --------------------------------------------------------- */
+    function initSubmenu() {
+        const items = $$('.has-submenu');
+        if (!items.length) return;
+
+        const closeAll = (except) => {
+            items.forEach((li) => {
+                if (li === except) return;
+                li.classList.remove('open');
+                const btn = $('.submenu-toggle', li);
+                if (btn) btn.setAttribute('aria-expanded', 'false');
+            });
+        };
+
+        items.forEach((li) => {
+            const btn = $('.submenu-toggle', li);
+            if (!btn) return;
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const willOpen = !li.classList.contains('open');
+                closeAll(li);
+                li.classList.toggle('open', willOpen);
+                btn.setAttribute('aria-expanded', String(willOpen));
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.has-submenu')) closeAll();
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeAll();
+        });
+
+        // Exposed so the mobile menu can reset submenus when it closes.
+        window.__closeSubmenus = () => closeAll();
+    }
     /* ---------------------------------------------------------
        5. Scroll-spy (IntersectionObserver, no scroll math)
     --------------------------------------------------------- */
@@ -524,9 +527,9 @@
     --------------------------------------------------------- */
     function boot() {
         initPreloader();
-        initCursor();
         initScrollChrome();
         initNav();
+        initSubmenu();
         initScrollSpy();
         initMarquee();
         initReveal();

@@ -68,7 +68,6 @@ full animation layer.
 
 - Branded preloader with sweeping progress bar
 - Gradient scroll-progress bar and a nav that shrinks on scroll
-- Custom cursor: neon dot + lagging ring that grows over interactive elements
 - Hero: letter-by-letter headline reveal, typing effect for roles, interactive
   particle constellation on canvas, parallax fade on scroll
 - Drifting aurora background with a masked grid overlay

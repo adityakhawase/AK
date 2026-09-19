@@ -22,6 +22,9 @@ import {
 import { GalaxyRenderer, isWebGLAvailable } from './renderer.js';
 import { OrbitCamera, CameraControls } from './controls.js';
 import { createStarfieldFallback } from './fallback.js';
+import { createMeteorOverlay } from './meteors.js';
+import { createMoteOverlay } from './motes.js';
+import { createGalaxyWidget } from './widget.js';
 
 /* ------------------------------------------------------------
    Quality tiers
@@ -34,6 +37,14 @@ const QUALITY_TIERS = {
     low:    { stars: 13000, dust: 1700, nebula: 130, deep: 3200,  maxPixelRatio: 1.25, bloom: false },
 };
 
+/* Meteor cadence per quality tier — high-end devices see frequent
+   streaks, low-end devices get an occasional one to save battery. */
+const METEOR_CADENCE = {
+    high:   { minInterval: 2200, maxInterval: 5500, maxAlive: 3 },
+    medium: { minInterval: 3200, maxInterval: 7500, maxAlive: 2 },
+    low:    { minInterval: 5500, maxInterval: 11000, maxAlive: 1 },
+};
+
 function detectQuality() {
     const coarsePointer = window.matchMedia('(pointer: coarse)').matches;
     const narrow = window.innerWidth < 820;
@@ -43,6 +54,118 @@ function detectQuality() {
     if (coarsePointer || narrow || cores <= 4 || memory <= 3) return 'low';
     if (cores <= 8 || memory <= 6) return 'medium';
     return 'high';
+}
+
+function startMeteors(tierName, reducedMotion, allowMeteors) {
+    if (reducedMotion || allowMeteors === false) return null;
+    try {
+        const cadence = METEOR_CADENCE[tierName] || METEOR_CADENCE.medium;
+        return createMeteorOverlay({ reducedMotion, ...cadence });
+    } catch (error) {
+        console.warn('[galaxy] meteors unavailable:', error.message);
+        return null;
+    }
+}
+
+/* Mote budget per tier — fewer large blurred sprites on weak GPUs. */
+const MOTE_COUNT = { high: 46, medium: 34, low: 20 };
+
+function startMotes(tierName, reducedMotion, allowMotes) {
+    if (reducedMotion || allowMotes === false) return null;
+    try {
+        return createMoteOverlay({ reducedMotion, count: MOTE_COUNT[tierName] || 34 });
+    } catch (error) {
+        console.warn('[galaxy] motes unavailable:', error.message);
+        return null;
+    }
+}
+
+/* Attach overlay layers (meteors, motes) to any instance — fallback
+   or WebGL — so one dispose()/setPaused() drives everything. */
+function withOverlays(instance, overlays) {
+    const live = (overlays || []).filter(Boolean);
+    if (!live.length) return instance;
+    if (!instance) {
+        return {
+            mode: 'overlays',
+            setPaused(p) { live.forEach((o) => (p ? o.pause?.() : o.resume?.())); },
+            dispose() { live.forEach((o) => o.dispose()); },
+        };
+    }
+    const originalDispose = instance.dispose.bind(instance);
+    instance.dispose = () => {
+        try { originalDispose(); } finally { live.forEach((o) => o.dispose()); }
+    };
+    const originalPause = instance.pause?.bind(instance);
+    const originalResume = instance.resume?.bind(instance);
+    instance.pause = () => {
+        originalPause ? originalPause() : live.forEach((o) => o.pause?.());
+        if (originalPause) live.forEach((o) => o.pause?.());
+    };
+    instance.resume = () => {
+        originalResume ? originalResume() : live.forEach((o) => o.resume?.());
+        if (originalResume) live.forEach((o) => o.resume?.());
+    };
+    instance.setPaused = (p) => (p ? instance.pause() : instance.resume());
+    instance.overlays = (instance.overlays || []).concat(live);
+    return instance;
+}
+
+/* ------------------------------------------------------------
+   Shared UI state: pause flag, quality override, widget singleton.
+   Lives at module level so a quality re-init (dispose + rebuild)
+   keeps the widget and the pause state instead of losing them.
+------------------------------------------------------------ */
+let currentInstance = null;
+let widgetHandle = null;
+let paused = false;
+
+function storedQuality() {
+    try {
+        const q = localStorage.getItem('galaxy-quality') || 'auto';
+        return ['auto', 'high', 'medium', 'low'].includes(q) ? q : 'auto';
+    } catch (error) {
+        return 'auto';
+    }
+}
+
+function resolveTierName(options = {}) {
+    if (options.quality) return options.quality;
+    const stored = storedQuality();
+    return stored !== 'auto' ? stored : detectQuality();
+}
+
+function ensureWidget() {
+    if (widgetHandle) return widgetHandle;
+    try {
+        widgetHandle = createGalaxyWidget({
+            getPaused: () => paused,
+            setPaused: (p) => {
+                paused = !!p;
+                if (currentInstance && currentInstance.setPaused) {
+                    currentInstance.setPaused(paused);
+                } else if (currentInstance) {
+                    paused ? currentInstance.pause?.() : currentInstance.resume?.();
+                }
+            },
+            getQuality: () => storedQuality(),
+            setQuality: (next) => {
+                try { localStorage.setItem('galaxy-quality', next); } catch (error) { /* private mode */ }
+                reinitGalaxy();
+            },
+        });
+    } catch (error) {
+        console.warn('[galaxy] widget unavailable:', error.message);
+        widgetHandle = null;
+    }
+    return widgetHandle;
+}
+
+function reinitGalaxy() {
+    const inst = currentInstance;
+    currentInstance = null;
+    try { inst && inst.dispose(); } catch (error) { /* keep going */ }
+    initGalaxy({});
 }
 
 /* ------------------------------------------------------------
@@ -121,8 +244,24 @@ export function initGalaxy(options = {}) {
         return instance;
     };
 
+    /* Track the live instance for the widget (pause + quality
+       re-init) and re-apply a persisted pause across rebuilds. */
+    const track = (instance) => {
+        currentInstance = instance;
+        try { window.__galaxy = instance; } catch (error) { /* noop */ }
+        ensureWidget();
+        if (paused && instance && instance.setPaused) instance.setPaused(true);
+        if (widgetHandle) widgetHandle.sync();
+        return finish(instance);
+    };
+
     if (!isWebGLAvailable()) {
-        return finish(createStarfieldFallback(canvas, { reducedMotion }));
+        const tierName = resolveTierName(options);
+        const overlays = [
+            startMeteors(tierName, reducedMotion, options.meteors),
+            startMotes(tierName, reducedMotion, options.motes),
+        ];
+        return track(withOverlays(createStarfieldFallback(canvas, { reducedMotion }), overlays));
     }
 
     let renderer;
@@ -130,10 +269,15 @@ export function initGalaxy(options = {}) {
         renderer = new GalaxyRenderer(canvas);
     } catch (error) {
         console.warn('[galaxy] WebGL init failed, using starfield fallback:', error.message);
-        return finish(createStarfieldFallback(canvas, { reducedMotion }));
+        const tierName = resolveTierName(options);
+        const overlays = [
+            startMeteors(tierName, reducedMotion, options.meteors),
+            startMotes(tierName, reducedMotion, options.motes),
+        ];
+        return track(withOverlays(createStarfieldFallback(canvas, { reducedMotion }), overlays));
     }
 
-    const tierName = options.quality || detectQuality();
+    const tierName = resolveTierName(options);
     const tier = QUALITY_TIERS[tierName] || QUALITY_TIERS.medium;
     const adaptive = options.adaptive !== false;
 
@@ -232,15 +376,14 @@ export function initGalaxy(options = {}) {
     let sampleTime = 0;
     let degradeStage = 0;   // 0 = full quality, 1 = lower scale, 2 = reduced layers
 
-    /* Composition is viewport-dependent: on a wide screen the galaxy
-       sits up and to the left of the centred headline; on a narrow one
-       there is no room beside the text, so it moves above it and the
-       camera backs off to keep the whole disc in frame. */
+    /* Composition is viewport-dependent: the core stays centred on
+       every screen size — only the distance changes, backing off on
+       narrow screens so the whole disc still fits in frame. */
     function updateFraming() {
         const portrait = window.innerWidth < 820;
-        camera.screenOffset[0] = portrait ? 0.02 : 0.36;
-        camera.screenOffset[1] = portrait ? -0.72 : -0.46;
-        camera.baseRadius = portrait ? 21.0 : 15.5;
+        camera.screenOffset[0] = 0;
+        camera.screenOffset[1] = 0;
+        camera.baseRadius = portrait ? 18.5 : 11.8;
     }
 
     function updateScrollInfluence() {
@@ -322,7 +465,10 @@ export function initGalaxy(options = {}) {
     }
 
     /* --- Lifecycle listeners -------------------------------- */
-    const onVisibility = () => (document.hidden ? stop() : start());
+    const onVisibility = () => {
+        if (paused) return;
+        document.hidden ? stop() : start();
+    };
     const onResize = () => {
         pixelRatio = Math.min(window.devicePixelRatio || 1, tier.maxPixelRatio);
         if (degradeStage >= 1) pixelRatio = Math.max(1, pixelRatio * 0.72);
@@ -350,11 +496,35 @@ export function initGalaxy(options = {}) {
     updateScrollInfluence();
     start();
 
-    return finish({
+    const overlays = [
+        startMeteors(tierName, reducedMotion, options.meteors),
+        startMotes(tierName, reducedMotion, options.motes),
+    ];
+
+    const instance = {
         mode: 'webgl',
         quality: tierName,
         camera,
         renderer,
+        overlays: overlays.filter(Boolean),
+        pause() {
+            stop();
+            overlays.forEach((o) => o && o.pause?.());
+        },
+        resume() {
+            if (!document.hidden) start();
+            overlays.forEach((o) => o && o.resume?.());
+        },
+        setPaused(p) {
+            paused = !!p;
+            if (paused) {
+                stop();
+                overlays.forEach((o) => o && o.pause?.());
+            } else {
+                if (!document.hidden) start();
+                overlays.forEach((o) => o && o.resume?.());
+            }
+        },
         dispose() {
             stop();
             controls.dispose();
@@ -364,8 +534,11 @@ export function initGalaxy(options = {}) {
             window.removeEventListener('scroll', onScroll);
             canvas.removeEventListener('webglcontextlost', onContextLost);
             renderer.dispose();
+            overlays.forEach((o) => o && o.dispose());
         },
-    });
+    };
+
+    return track(instance);
 }
 
 /* Auto-start once the document is parsed. */
